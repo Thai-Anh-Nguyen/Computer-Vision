@@ -5,7 +5,9 @@ import os
 from Week1_Capturering.Week1_captureSaveImg import CaptureSaveImgProcessor
 from Week2_Filtering.Week2_Ex1_Grayscale import GrayscaleProcessor
 
-
+"""
+rtsp://admin:ACLAB2023@192.168.8.105:554/Streaming/channels/101
+"""
 class ImageProcessor:
     """
     Class for processing images from camera feed
