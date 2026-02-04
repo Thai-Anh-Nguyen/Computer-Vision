@@ -5,6 +5,9 @@ import os
 from Week1_Capturering.Week1_captureSaveImg import CaptureSaveImgProcessor
 from Week2_Filtering.Week2_Ex1_Grayscale import GrayscaleProcessor
 from Week2_Filtering.Week2_Ex2_Gaussian import GaussianProcessor
+from Week2_Filtering.Week2_Ex3_Median import MedianBurProcessor
+from Week2_Filtering.Week2_Ex4_Edge_detection import EdgeDectectProcessor
+
 
 """
 rtsp://admin:ACLAB2023@192.168.8.105:554/Streaming/channels/101
@@ -37,9 +40,13 @@ class ImageProcessor:
         
         step1_image = saveImg.capture_and_save_image(bgr_img, "test_capture.bmp") ## Step 1: Capture and Save Image
         ######################## IMAGE FILTERING ########################################
-        ## Step 2: Convert to Grayscale
-        grayScaleProcessor = GrayscaleProcessor()
-        processed_img = grayScaleProcessor.convert_to_grayscale(bgr_img)
+        ## Step 2: Convert
+        
+        # grayScaleProcessor = GrayscaleProcessor()
+        # processed_img = grayScaleProcessor.convert_to_grayscale(bgr_img)
+
+        edgedetectprocessor = EdgeDectectProcessor()
+        processed_img = edgedetectprocessor.detect_edges(bgr_img)
         ## Save Processed Image
         step3_image = saveImg.capture_and_save_image(processed_img, "processed_capture.bmp")
         #################################################################################
