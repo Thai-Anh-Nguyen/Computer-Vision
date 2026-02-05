@@ -8,7 +8,7 @@ class GaussianProcessor:
     # Topic: Introduction to Computer Vision, Images as Functions & Filtering
     # =============================================================================
     
-    def apply_gaussian_filter(self, img, kernel_size=(5, 5), sigma=1.0):
+    def convert_to_gaussian(self, bgr_img):
         """
         Apply Gaussian filtering to reduce noise
         
@@ -23,9 +23,10 @@ class GaussianProcessor:
         # TODO: Implement Gaussian filtering
         # Hint: Use cv2.GaussianBlur
 
-        if img is None:
+        if bgr_img is None:
             return None
-
-        filtered_img = cv2.GaussianBlur(img, kernel_size, sigma)
+        kernel_size=(15, 15)
+        sigma=5.0
+        filtered_img = cv2.GaussianBlur(bgr_img, kernel_size, sigma)
         return filtered_img
     
