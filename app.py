@@ -9,6 +9,12 @@ from camera import VideoCamera
 app = Flask(__name__)
 
 
+"""
+rtsp://admin:ACLAB2023@192.168.8.105:554/Streaming/channels/101
+rtsp://admin:ACLAB2023@192.168.8.106:554/Streaming/channels/101
+"""
+
+
 # initialize two camera handlers (two columns)
 cameras = {
     1: VideoCamera(),
