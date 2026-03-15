@@ -1,2 +1,51 @@
+# =====================
+# Python
+# =====================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
 venv/
-note
+env/
+.venv/
+
+# =====================
+# Project-specific
+# =====================
+
+# Captured images — never push these
+CapturedImage/
+Filtered_images/
+
+# Trained models / weights (can be large)
+*.h5
+*.pt
+*.pth
+*.pkl
+*.onnx
+
+# Tesseract / OCR temp files
+*.box
+*.traineddata
+
+# =====================
+# Environment & Secrets
+# =====================
+.env
+.env.local
+config.local.py
+
+# =====================
+# OS & Editor
+# =====================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
