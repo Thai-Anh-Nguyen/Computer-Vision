@@ -1,67 +1,200 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Camera Capture Demo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-  <h1>Camera Capture</h1>
-  <div class="container">
-    <!-- Column 1 -->
-    <div class="cam-col" id="col-1">
-      <div class="controls">
-        <label>IP/URL Camera 1</label>
-        <input type="text" id="src-1" placeholder="rtsp://..., http://..., /dev/video0" />
-        <button onclick="setSource(1)">Connect</button>
-        <button onclick="stopSource(1)" class="stop">Stop</button>
-      </div>
+  <head>
+    <meta charset="utf-8" />
+    <title>CV Camera</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+    />
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <header>
+      <span class="logo">CV<em>CAM</em></span>
+      <span class="subtitle">Computer Vision · Dual Camera</span>
+    </header>
 
-      <div class="video-box">
-        <img id="video-1" src="" alt="camera1 stream"/>
-        <button class="capture-btn" aria-label="Capture" onclick="capture(1)">&#128247;</button>
-      </div>
+    <main class="grid">
+      <!-- ── Camera Column (macro, reused for cam 1 and 2) ── -->
+      <section class="cam-col" id="col-1">
+        <div class="col-header">
+          <span class="cam-label">CAM 01</span>
+          <span class="status-dot" id="status-1"></span>
+        </div>
 
-      <div class="image-box">
-        <h3>Captured Image</h3>
-        <img id="captured-1" src="" alt="captured" />
-      </div>
+        <!-- Source input -->
+        <div class="source-row">
+          <input
+            type="text"
+            id="src-1"
+            placeholder="0  /  http://ip:port/video  /  rtsp://..."
+          />
+          <div class="source-actions">
+            <button class="btn-connect" onclick="setSource(1)">Connect</button>
+            <button class="btn-stop" onclick="stopSource(1)">Stop</button>
+          </div>
+        </div>
 
-      <div class="fragment-box">
-        <h3>Fragment (processed)</h3>
-        <img id="fragment-1" src="" alt="fragment" />
-        <div class="process-meta" id="proc-time-1">Process time: --</div>
-      </div>
-    </div>
+        <!-- Quick-fill presets -->
+        <div class="presets">
+          <span class="preset-label">Quick:</span>
+          <button class="preset" onclick="fillPreset(1, '0')">Webcam</button>
+          <button class="preset" onclick="fillPreset(1, '1')">USB Cam</button>
+          <button
+            class="preset"
+            onclick="fillPreset(1, 'http://192.168.x.x:PORT/video')"
+          >
+            iPhone
+          </button>
+          <button
+            class="preset"
+            onclick="fillPreset(1, 'rtsp://user:pass@ip:554/stream')"
+          >
+            RTSP
+          </button>
+        </div>
 
-    <!-- Column 2 -->
-    <div class="cam-col" id="col-2">
-      <div class="controls">
-        <label>IP/URL Camera 2</label>
-        <input type="text" id="src-2" placeholder="rtsp://..., http://..., /dev/video1" />
-        <button onclick="setSource(2)">Connect</button>
-        <button onclick="stopSource(2)" class="stop">Stop</button>
-      </div>
+        <!-- Live stream -->
+        <div class="video-wrap">
+          <img id="video-1" src="" alt="Camera 1 stream" class="video-img" />
+          <button class="capture-btn" aria-label="Capture" onclick="capture(1)">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M20 7h-2.5l-1.5-2h-8L6.5 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"
+              />
+            </svg>
+          </button>
+        </div>
 
-      <div class="video-box">
-        <img id="video-2" src="" alt="camera2 stream"/>
-        <button class="capture-btn" aria-label="Capture" onclick="capture(2)">&#128247;</button>
-      </div>
+        <!-- Filter selector -->
+        <div class="filter-row">
+          <label for="filter-1">Filter</label>
+          <select id="filter-1">
+            <option value="none">— none (passthrough) —</option>
+            <!-- options injected by JS on load via GET /filters -->
+          </select>
+        </div>
 
-      <div class="image-box">
-        <h3>Captured Image</h3>
-        <img id="captured-2" src="" alt="captured" />
-      </div>
+        <!-- Output images -->
+        <div class="output-grid">
+          <div class="output-panel">
+            <div class="panel-label">
+              Original
+              <button class="button-save" onclick="saveImg(1, 'captured')">
+                Save
+              </button>
+            </div>
+            <img id="captured-1" src="" alt="captured" />
+          </div>
+          <div class="output-panel">
+            <div class="panel-label">
+              Processed
+              <button class="button-save" onclick="saveImg(1, 'processed')">
+                Save
+              </button>
+            </div>
+            <img id="processed-1" src="" alt="processed" />
+          </div>
+        </div>
 
-      <div class="fragment-box">
-        <h3>Fragment (processed)</h3>
-        <img id="fragment-2" src="" alt="fragment" />
-        <div class="process-meta" id="proc-time-2">Process time: --</div>
-      </div>
-    </div>
-  </div>
+        <div class="meta" id="proc-time-1">process time: —</div>
+      </section>
 
-  <script src="/static/main.js"></script>
-</body>
+      <!-- ── Camera 2 ── -->
+      <section class="cam-col" id="col-2">
+        <div class="col-header">
+          <span class="cam-label">CAM 02</span>
+          <span class="status-dot" id="status-2"></span>
+        </div>
+
+        <div class="source-row">
+          <input
+            type="text"
+            id="src-2"
+            placeholder="0  /  http://ip:port/video  /  rtsp://..."
+          />
+          <div class="source-actions">
+            <button class="btn-connect" onclick="setSource(2)">Connect</button>
+            <button class="btn-stop" onclick="stopSource(2)">Stop</button>
+          </div>
+        </div>
+
+        <div class="presets">
+          <span class="preset-label">Quick:</span>
+          <button class="preset" onclick="fillPreset(2, '0')">Webcam</button>
+          <button class="preset" onclick="fillPreset(2, '1')">USB Cam</button>
+          <button
+            class="preset"
+            onclick="fillPreset(2, 'http://192.168.x.x:PORT/video')"
+          >
+            iPhone
+          </button>
+          <button
+            class="preset"
+            onclick="fillPreset(2, 'rtsp://user:pass@ip:554/stream')"
+          >
+            RTSP
+          </button>
+        </div>
+
+        <div class="video-wrap">
+          <img id="video-2" src="" alt="Camera 2 stream" class="video-img" />
+          <button class="capture-btn" aria-label="Capture" onclick="capture(2)">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M20 7h-2.5l-1.5-2h-8L6.5 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <div class="filter-row">
+          <label for="filter-2">Filter</label>
+          <select id="filter-2">
+            <option value="none">— none (passthrough) —</option>
+          </select>
+        </div>
+
+        <div class="output-grid">
+          <div class="output-panel">
+            <div class="panel-label">
+              Original
+              <button class="button-save" onclick="saveImg(2, 'captured')">
+                Save
+              </button>
+            </div>
+            <img id="captured-2" src="" alt="captured" />
+          </div>
+          <div class="output-panel">
+            <div class="panel-label">
+              Processed
+              <button class="button-save" onclick="saveImg(2, 'processed')">
+                Save
+              </button>
+            </div>
+            <img id="processed-2" src="" alt="processed" />
+          </div>
+        </div>
+
+        <div class="meta" id="proc-time-2">process time: —</div>
+      </section>
+    </main>
+
+    <script src="/static/main.js"></script>
+  </body>
 </html>
